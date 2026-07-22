@@ -1,0 +1,6 @@
+{
+  "name": "DeepSpot",
+  "description": "Gamified human deepfake detection & pattern recognition platform",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
