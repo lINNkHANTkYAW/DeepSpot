@@ -1,0 +1,109 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  username      String   @unique
+  displayName   String
+  avatarUrl     String?
+  bio           String?
+  city          String?
+  province      String?
+  country       String?
+  countryCode   String?
+  passwordHash  String?
+  resetToken    String?
+  resetExpires  DateTime?
+  totalPoints   Int      @default(0)
+  accuracy      Float    @default(0)
+  streak        Int      @default(0)
+  longestStreak Int      @default(0)
+  role          String   @default("USER")
+  isModerator   Boolean  @default(false)
+  createdAt     DateTime @default(now())
+
+  posts         Post[]
+  votes         Vote[]
+  notifications Notification[]
+  reports       Report[]
+}
+
+model Post {
+  id               String   @id @default(cuid())
+  authorId         String
+  author           User     @relation(fields: [authorId], references: [id])
+  authorUsername   String
+  authorDisplayName String
+  authorAvatar     String?
+  authorLocation   String?
+  postType         String
+  status           String   @default("PENDING")
+  mediaUrl         String?
+  mediaType        String?
+  trueLabel        String?
+  mediaUrlA        String?
+  mediaUrlB        String?
+  mediaTypeA       String?
+  mediaTypeB       String?
+  fakeSlot         String?
+  difficulty       String   @default("INTERMEDIATE")
+  revealHint       String?
+  caption          String?
+  tags             String[] @default([])
+  sourceCredit     String?
+  forensicTells    Json?
+  totalVotes       Int      @default(0)
+  correctVotes     Int      @default(0)
+  accuracyRate     Float    @default(0)
+  createdAt        DateTime @default(now())
+  closedAt         DateTime?
+
+  votes            Vote[]
+  reports          Report[]
+}
+
+model Vote {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  postId        String
+  post          Post     @relation(fields: [postId], references: [id])
+  voteLabel     String?
+  voteSlot      String?
+  isCorrect     Boolean
+  pointsAwarded Int      @default(0)
+  votedAt       DateTime @default(now())
+
+  @@unique([userId, postId])
+}
+
+model Report {
+  id         String   @id @default(cuid())
+  reporterId String
+  reporter   User     @relation(fields: [reporterId], references: [id])
+  postId     String
+  post       Post     @relation(fields: [postId], references: [id])
+  reason     String
+  note       String?
+  status     String   @default("OPEN")
+  createdAt  DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  title     String
+  message   String
+  type      String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  link      String?
+}

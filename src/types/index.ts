@@ -17,6 +17,7 @@ export interface User {
   province?: string;
   country?: string;
   countryCode?: string;
+  passwordHash?: string;
   totalPoints: number;
   accuracy: number; // Percentage 0 - 100
   streak: number;
@@ -24,6 +25,23 @@ export interface User {
   role: UserRole;
   isModerator: boolean;
   createdAt: string;
+}
+
+export interface LoginRequest {
+  usernameOrEmail: string;
+  password: string;
+}
+
+export interface SignupRequest {
+  username: string;
+  email: string;
+  displayName: string;
+  password: string;
+}
+
+export interface AuthResponse {
+  user: Omit<User, 'passwordHash'>;
+  token: string;
 }
 
 export interface ForensicTell {

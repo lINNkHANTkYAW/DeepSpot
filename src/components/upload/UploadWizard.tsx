@@ -103,9 +103,13 @@ export const UploadWizard: React.FC<UploadWizardProps> = ({ onSuccess }) => {
     };
 
     try {
+      const token = localStorage.getItem('deepspot_token');
       const res = await fetch('/api/upload', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
         body: JSON.stringify(body),
       });
 
@@ -224,6 +228,19 @@ export const UploadWizard: React.FC<UploadWizardProps> = ({ onSuccess }) => {
                   Supports JPG, PNG, WEBP, MP4
                 </p>
               </div>
+
+              {mediaUrl && (
+                <div className="mt-4">
+                  <span className="text-[11px] font-mono text-zinc-400 block mb-2">Preview:</span>
+                  <div className="rounded-lg overflow-hidden border border-[#2A2D38] bg-black">
+                    {mediaType === 'VIDEO' ? (
+                      <video src={mediaUrl} controls className="w-full max-h-64" />
+                    ) : (
+                      <img src={mediaUrl} alt="Uploaded preview" className="w-full max-h-64 object-contain" />
+                    )}
+                  </div>
+                </div>
+              )}
 
               {/* Sample Presets */}
               <div className="mt-4">

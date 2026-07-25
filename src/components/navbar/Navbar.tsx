@@ -14,6 +14,9 @@ import {
   Home,
   PlusSquare,
   BookOpen,
+  LogIn,
+  LogOut,
+  UserPlus,
 } from 'lucide-react';
 import { User, NotificationItem } from '../../types';
 import { StreakIndicator } from '../shared/StreakIndicator';
@@ -24,6 +27,7 @@ interface NavbarProps {
   setActiveTab: (tab: string) => void;
   notifications: NotificationItem[];
   onMarkNotificationRead: (id: string) => void;
+  onLogout?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -32,8 +36,10 @@ export const Navbar: React.FC<NavbarProps> = ({
   setActiveTab,
   notifications,
   onMarkNotificationRead,
+  onLogout,
 }) => {
   const [showNotifMenu, setShowNotifMenu] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   return (
@@ -196,25 +202,71 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </div>
 
-          {/* User Profile Avatar */}
-          <button
-            type="button"
-            onClick={() => setActiveTab('profile')}
-            className={`flex items-center gap-2 p-1 rounded-lg border transition ${
-              activeTab === 'profile'
-                ? 'border-[#00E5B4] bg-[#1E2029]'
-                : 'border-[#2A2D38] bg-[#16181F] hover:border-zinc-500'
-            }`}
-          >
-            <img
-              src={user.avatarUrl}
-              alt={user.displayName}
-              className="w-7 h-7 rounded-md object-cover"
-            />
-            <span className="text-xs font-semibold text-zinc-200 hidden sm:inline">
-              @{user.username}
-            </span>
-          </button>
+          {/* User Profile / Logout */}
+          {onLogout ? (
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setShowUserMenu(!showUserMenu)}
+                className={`flex items-center gap-2 p-1 rounded-lg border transition ${
+                  activeTab === 'profile'
+                    ? 'border-[#00E5B4] bg-[#1E2029]'
+                    : 'border-[#2A2D38] bg-[#16181F] hover:border-zinc-500'
+                }`}
+              >
+                <img
+                  src={user.avatarUrl}
+                  alt={user.displayName}
+                  className="w-7 h-7 rounded-md object-cover"
+                />
+                <span className="text-xs font-semibold text-zinc-200 hidden sm:inline">
+                  @{user.username}
+                </span>
+              </button>
+
+              {showUserMenu && (
+                <div className="absolute right-0 mt-2 w-40 bg-[#16181F] border border-[#2A2D38] rounded-lg shadow-2xl p-2 z-50">
+                  <button
+                    type="button"
+                    onClick={() => { setActiveTab('profile'); setShowUserMenu(false); }}
+                    className="w-full text-left px-3 py-2 text-xs text-zinc-300 hover:bg-[#1E2029] rounded flex items-center gap-2 transition"
+                  >
+                    <UserIcon size={14} />
+                    Profile
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { onLogout(); setShowUserMenu(false); }}
+                    className="w-full text-left px-3 py-2 text-xs text-rose-400 hover:bg-[#1E2029] rounded flex items-center gap-2 transition"
+                  >
+                    <LogOut size={14} />
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setActiveTab('profile')}
+                className={`flex items-center gap-2 p-1 rounded-lg border transition ${
+                  activeTab === 'profile'
+                    ? 'border-[#00E5B4] bg-[#1E2029]'
+                    : 'border-[#2A2D38] bg-[#16181F] hover:border-zinc-500'
+                }`}
+              >
+                <img
+                  src={user.avatarUrl}
+                  alt={user.displayName}
+                  className="w-7 h-7 rounded-md object-cover"
+                />
+                <span className="text-xs font-semibold text-zinc-200 hidden sm:inline">
+                  @{user.username}
+                </span>
+              </button>
+            </div>
+          )}
         </div>
       </div>
 

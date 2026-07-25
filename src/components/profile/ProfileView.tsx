@@ -30,9 +30,19 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ user, onUpdateUser }) 
   const [city, setCity] = useState(user.city || '');
   const [country, setCountry] = useState(user.country || '');
 
+  const getAuthHeaders = () => {
+    const token = localStorage.getItem('deepspot_token');
+    return {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    };
+  };
+
   const fetchProfileData = async () => {
     try {
-      const res = await fetch('/api/profile/me');
+      const res = await fetch('/api/profile/me', {
+        headers: getAuthHeaders(),
+      });
       const data = await res.json();
       if (data.badges) setBadges(data.badges);
       if (data.uploadedPosts) setMyPosts(data.uploadedPosts);
@@ -49,7 +59,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ user, onUpdateUser }) 
     try {
       const res = await fetch('/api/auth/me', {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ displayName, bio, city, country }),
       });
       const data = await res.json();

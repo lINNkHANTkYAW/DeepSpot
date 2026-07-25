@@ -8,12 +8,20 @@ export const ModerationView: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'pending' | 'reports'>('pending');
 
+  const getAuthHeaders = () => {
+    const token = localStorage.getItem('deepspot_token');
+    return {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    };
+  };
+
   const fetchData = async () => {
     setLoading(true);
     try {
       const [modRes, repRes] = await Promise.all([
-        fetch('/api/admin/moderation/queue'),
-        fetch('/api/admin/reports'),
+        fetch('/api/admin/moderation/queue', { headers: getAuthHeaders() }),
+        fetch('/api/admin/reports', { headers: getAuthHeaders() }),
       ]);
       const modData = await modRes.json();
       const repData = await repRes.json();
@@ -35,7 +43,7 @@ export const ModerationView: React.FC = () => {
     try {
       await fetch(`/api/admin/moderation/${id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ action }),
       });
       setPendingPosts((prev) => prev.filter((p) => p.id !== id));

@@ -34,6 +34,14 @@ export const FeedView: React.FC<FeedViewProps> = ({ onRefreshUser }) => {
   const [reportNote, setReportNote] = useState<string>('');
   const [reportSuccessMsg, setReportSuccessMsg] = useState<string>('');
 
+  const getAuthHeaders = () => {
+    const token = localStorage.getItem('deepspot_token');
+    return {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    };
+  };
+
   const fetchPosts = async () => {
     setLoading(true);
     try {
@@ -71,7 +79,7 @@ export const FeedView: React.FC<FeedViewProps> = ({ onRefreshUser }) => {
 
     const res = await fetch(`/api/posts/${postId}/vote`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeaders(),
       body: JSON.stringify(body),
     });
 
@@ -125,7 +133,7 @@ export const FeedView: React.FC<FeedViewProps> = ({ onRefreshUser }) => {
 
   const handleAiHintRefresh = async (postId: string) => {
     try {
-      const res = await fetch(`/api/posts/${postId}/ai-hint`, { method: 'POST' });
+      const res = await fetch(`/api/posts/${postId}/ai-hint`, { method: 'POST', headers: getAuthHeaders() });
       const data = await res.json();
       if (data.hint) {
         setPosts((prev) =>
@@ -142,7 +150,7 @@ export const FeedView: React.FC<FeedViewProps> = ({ onRefreshUser }) => {
     try {
       const res = await fetch(`/api/posts/${reportingPost.id}/report`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ reason: reportReason, note: reportNote }),
       });
       const data = await res.json();
