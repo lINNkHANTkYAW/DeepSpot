@@ -42,6 +42,11 @@ export function loadAppStore(defaultStore: AppStore): AppStore {
 export function persistAppStore(store: AppStore): void {
   const { sessions, ...rest } = store;
   const storeFile = getStoreFilePath();
-  fs.mkdirSync(path.dirname(storeFile), { recursive: true });
-  fs.writeFileSync(storeFile, JSON.stringify(rest, null, 2));
+
+  try {
+    fs.mkdirSync(path.dirname(storeFile), { recursive: true });
+    fs.writeFileSync(storeFile, JSON.stringify(rest, null, 2));
+  } catch (error) {
+    console.error('Failed to persist app store:', error);
+  }
 }

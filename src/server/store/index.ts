@@ -140,7 +140,11 @@ export async function createStore(): Promise<AppStore> {
   }
 
   store.persist = () => persistAppStore(store);
-  store.persist();
+  try {
+    store.persist();
+  } catch (error) {
+    console.error('Initial store persistence failed:', error);
+  }
 
   return store;
 }
