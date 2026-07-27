@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { User, NotificationItem } from './types';
 import { Navbar } from './components/navbar/Navbar';
