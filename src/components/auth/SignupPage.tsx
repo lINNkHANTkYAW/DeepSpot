@@ -25,6 +25,12 @@ export function SignupPage({ onSignup, onSwitchToLogin }: SignupPageProps) {
         body: JSON.stringify({ username, email, displayName, password }),
       });
 
+      const contentType = res.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        setError('Server error. Please try again later.');
+        return;
+      }
+
       const data = await res.json();
       if (!res.ok) {
         setError(data.error || 'Signup failed.');

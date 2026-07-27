@@ -28,6 +28,11 @@ export default function App() {
       const res = await fetch('/api/auth/me', {
         headers: getAuthHeaders(),
       });
+      const contentType = res.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        setUser(null);
+        return;
+      }
       const data = await res.json();
       if (data.user) {
         setUser(data.user);

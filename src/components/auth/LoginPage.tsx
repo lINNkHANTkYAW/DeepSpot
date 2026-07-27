@@ -23,6 +23,12 @@ export function LoginPage({ onLogin, onSwitchToSignup }: LoginPageProps) {
         body: JSON.stringify({ usernameOrEmail, password }),
       });
 
+      const contentType = res.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        setError('Server error. Please try again later.');
+        return;
+      }
+
       const data = await res.json();
       if (!res.ok) {
         setError(data.error || 'Login failed.');
