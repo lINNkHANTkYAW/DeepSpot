@@ -3,7 +3,7 @@ import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
-let supabase: ReturnType<typeof createSupabaseClient> | null = null;
+let supabase = createClientSafely();
 
 function createClientSafely() {
   if (!supabaseUrl || !supabaseKey) {
@@ -24,9 +24,6 @@ function createClientSafely() {
 }
 
 export function getSupabaseClient() {
-  if (!supabase) {
-    supabase = createClientSafely();
-  }
 
   if (!supabase) {
     throw new Error('Supabase client is not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY.');
