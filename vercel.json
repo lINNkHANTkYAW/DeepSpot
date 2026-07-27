@@ -9,18 +9,18 @@
       }
     },
     {
-      "src": "dist/server.cjs",
+      "src": "api/index.ts",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "dist/server.cjs"
+      "dest": "api/index.ts"
     },
     {
       "src": "/(.*)",
-      "dest": "dist/index.html"
+      "dest": "dist/$1"
     }
   ]
 }
