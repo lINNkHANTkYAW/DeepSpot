@@ -1,8 +1,9 @@
 import 'dotenv/config';
 import { createApp } from '../src/server/app';
+import express from 'express';
 
-let appPromise: Promise<ReturnType<import('express').Express>> | null = null;
-let errorApp: ReturnType<import('express').Express> | null = null;
+let appPromise: Promise<ReturnType<typeof express>> | null = null;
+let errorApp: ReturnType<typeof express> | null = null;
 
 async function getApp() {
   if (errorApp) return errorApp;
@@ -11,7 +12,6 @@ async function getApp() {
       .then((app) => app)
       .catch((error) => {
         console.error('Failed to initialize DeepSpot app:', error);
-        const express = require('express');
         errorApp = express();
         errorApp.use((_req, res) => {
           res.status(500).json({ error: 'Server initialization failed. Check Vercel logs.' });
