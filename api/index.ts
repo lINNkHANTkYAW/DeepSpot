@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { createApp } from '../src/server/app';
+import { createApp } from '../src/server/app.ts';
 import express from 'express';
 
 let appPromise: Promise<ReturnType<typeof express>> | null = null;
